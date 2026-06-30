@@ -33,8 +33,8 @@ CROPS = {
     "fig_a6_sensitivity.png": (30, "832x200+264+235"),
     "main_qualitative.png": (12, "785x230+292+606"),
     "qual_cifar.png": (26, "840x256+270+226"),
-    "qual_cub.png": (26, "840x216+270+570"),
-    "qual_cars.png": (26, "840x218+270+848"),
+    "qual_cub.png": (26, "840x224+270+568"),
+    "qual_cars.png": (26, "840x216+270+856"),
     "qual_imagenet.png": (26, "840x228+270+1124"),
 }
 
@@ -66,6 +66,8 @@ def crop(
         cmd.extend(["-fuzz", "15%", "-trim", "+repage"])
     elif trim:
         cmd.extend(["-fuzz", "1%", "-trim", "+repage"])
+    if out.name == "qual_cars.png":
+        cmd.extend(["-gravity", "South", "-chop", "0x18", "+repage"])
     cmd.extend(["-strip", "-quality", "98", str(out)])
     run(cmd)
 

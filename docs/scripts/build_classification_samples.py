@@ -20,8 +20,8 @@ PAGE = 26
 # Right-hand (RAHA-distilled) column of each appendix qualitative figure.
 RAHA_CROPS = [
     ("qual_cifar_raha.png", "280x256+830+226", "CIFAR-100"),
-    ("qual_cub_raha.png", "280x216+830+570", "CUB-200-2011"),
-    ("qual_cars_raha.png", "280x218+830+848", "Stanford Cars"),
+    ("qual_cub_raha.png", "280x224+830+568", "CUB-200-2011"),
+    ("qual_cars_raha.png", "280x203+830+872", "Stanford Cars"),
     ("qual_imagenet_raha.png", "280x228+830+1124", "ImageNet-1K"),
 ]
 

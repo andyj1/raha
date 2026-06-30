@@ -89,8 +89,8 @@ CLASSIFICATION = {
 
 APPENDIX_CROPS = [
     ("cifar", "CIFAR-100", "840x256+270+226"),
-    ("cub", "CUB-200-2011", "840x216+270+570"),
-    ("cars", "Stanford Cars", "840x218+270+848"),
+    ("cub", "CUB-200-2011", "840x224+270+568"),
+    ("cars", "Stanford Cars", "840x216+270+856"),
     ("imagenet", "ImageNet-1K", "840x228+270+1124"),
 ]
 
@@ -381,7 +381,7 @@ def retrieval_svg() -> str:
     budgets = [100, 200, 500, 1000]
     width, height = 860, 940
     panel_w, panel_h = 760, 218
-    left, top, gap = 58, 154, 238
+    left, top, gap = 58, 132, 238
     parts: List[str] = []
 
     def axis_ceiling(dataset: str) -> int:
@@ -398,10 +398,9 @@ def retrieval_svg() -> str:
     parts.append(f'<rect width="{width}" height="{height}" rx="26" fill="#ffffff"/>')
     parts.append('<path d="M42 74H818" stroke="#1d76bb" stroke-width="3"/>')
     parts.append('<text x="42" y="52" font-size="31" font-weight="900" fill="#000000">Retrieval across synthetic budgets</text>')
-    parts.append('<text x="42" y="101" font-size="18" fill="#000000">Same protocol with per-dataset y-axes. Higher is better.</text>')
-    parts.append(f'<rect x="306" y="112" width="248" height="36" rx="16" fill="#ffffff" stroke="#c5d9e8" opacity=".94"/>')
-    parts.append(f'<circle cx="332" cy="130" r="8" fill="{COLORS[BASELINE]}"/><text x="350" y="136" font-size="17" font-weight="840" fill="#000000">Baseline</text>')
-    parts.append(f'<circle cx="454" cy="130" r="8" fill="{COLORS[OURS]}"/><text x="472" y="136" font-size="17" font-weight="840" fill="#000000">RAHA</text>')
+    parts.append(f'<rect x="306" y="90" width="248" height="36" rx="16" fill="#ffffff" stroke="#c5d9e8" opacity=".94"/>')
+    parts.append(f'<circle cx="332" cy="108" r="8" fill="{COLORS[BASELINE]}"/><text x="350" y="114" font-size="17" font-weight="840" fill="#000000">Baseline</text>')
+    parts.append(f'<circle cx="454" cy="108" r="8" fill="{COLORS[OURS]}"/><text x="472" y="114" font-size="17" font-weight="840" fill="#000000">RAHA</text>')
 
     for i, (dataset, series) in enumerate(RETRIEVAL.items()):
         y0 = top + i * gap
@@ -1446,11 +1445,11 @@ HTML_TEMPLATE = """<!doctype html>
           <p class="lead">The pipeline stays compact: synthetic pairs are optimized through hyperbolic contrastive alignment plus range/residual relevance distillation.</p>
         </div>
         <div class="method-strip fade">
-          <div class="step"><span>1</span><h3>Synthetic pairs</h3><p>Learn pixels and continuous text embeddings.</p></div>
-          <div class="step"><span>2</span><h3>Lorentz lift</h3><p>Use geodesic image-text contrastive alignment.</p></div>
-          <div class="step"><span>3</span><h3>Tangent SVD</h3><p>Estimate the real batch coupling rank.</p></div>
-          <div class="step"><span>4</span><h3>Range match</h3><p>Preserve dominant shared semantic order.</p></div>
-          <div class="step"><span>5</span><h3>Residual control</h3><p>Keep weak interactions from dominating.</p></div>
+          <div class="step"><span>1</span><h3>Initialize synthetic pairs</h3><p>Learn pixels and continuous text embeddings.</p></div>
+          <div class="step"><span>2</span><h3>Lift Lorentz geometry</h3><p>Use geodesic image-text contrastive alignment.</p></div>
+          <div class="step"><span>3</span><h3>SVD decomposition on tangent space</h3><p>Estimate the real batch coupling rank.</p></div>
+          <div class="step"><span>4</span><h3>Match dominant range with reg.</h3><p>Preserve dominant shared semantic order.</p></div>
+          <div class="step"><span>5</span><h3>Control residual with reg.</h3><p>Keep weak interactions from dominating.</p></div>
         </div>
         <div class="figure method-walkthrough fade"><img src="%%WALKTHROUGH_FIG%%" alt="Step-by-step RAHA walkthrough showing real and synthetic batches, hyperbolic lift, SVD decomposition, relevance matching, and synthetic set update."></div>
         <div class="method-support fade">
