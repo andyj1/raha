@@ -1,0 +1,18 @@
+id="analysis">
+      <div class="wrap">
+        <div class="section-head fade">
+          <div class="kicker">Analysis</div>
+          <h2>Range matching carries the retrieval signal, and residual compression keeps it usable.</h2>
+          <p class="lead">Component-level analysis shows RAHA is strongest when hyperbolic contrastive alignment is paired with dominant range supervision, controlled residual refinement, and hyperbolic rather than Euclidean relevance matching.</p>
+        </div>
+                        <div class="analysis-layout">
+          <div class="analysis-top-right">
+            <div class="figure fade"><div class="media"><img src="[EMBED]" alt="Fig. 2 component ablation chart."></div><div class="caption">Fig. 2: Component attribution under the same protocol. Range matching provides the main relevance-transfer gain, while residual control improves the full model as a refinement when anchored by the range.</div></div>
+            <div class="figure fade analysis-a6-panel"><div class="media"><img src="[EMBED]" alt="Fig. A6 panels (a) and (b)."></div></div>
+          </div>
+          <div class="figure fade analysis-a6-bottom"><div class="media"><img src="[EMBED]" alt="Fig. A6 panels (c) and (d)."></div><div class="caption">Fig. A6: Sensitivity and ablation analysis for matching terms, geometry, and residual control.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" 

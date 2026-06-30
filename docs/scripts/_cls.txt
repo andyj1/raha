@@ -1,0 +1,14 @@
+classification-samples-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; padding: 10px; background: #ffffff; align-items: stretch; }
+    .classification-sample-cell { min-width: 0; border: 1px solid #c5d9e8; border-radius: 8px; overflow: hidden; background: #ffffff; display: flex; flex-direction: column; height: 100%; }
+    .classification-sample-cell .qual-label { border-bottom: 1px solid #c5d9e8; text-align: center; font-size: .82rem; padding: 7px 6px; flex: 0 0 auto; }
+    .classification-sample-cell .media { flex: 1 1 auto; display: grid; place-items: center; min-height: 220px; padding: 10px 8px; background: #ffffff; }
+    .figure.classification-samples .classification-sample-cell .media img { width: auto; max-width: 100%; height: auto; max-height: 220px; object-fit: contain; object-position: center center; display: block; margin: 0 auto; }
+    .figure-gap { height: 16px; }
+    .tile, .figure, .table-shell {
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(29,118,187,.16);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    .tile { padding: 18px; }
+    .tile strong { display: block; font-size: 2.2rem; line-h

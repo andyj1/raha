@@ -1,0 +1,465 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECCV 2026 Itinerary - Malmö & Copenhagen</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <style>
+        /* Swedish/Scandinavian Minimalist Design Palette
+           Swedish Blue: #006AA7
+           Swedish Yellow: #FECB00
+           Light Background: #F4F7F6
+           Dark Text: #2C3E50
+        */
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #2C3E50;
+            background-color: #F4F7F6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            background-color: #006AA7;
+            color: #FFFFFF;
+            padding: 50px 20px 40px;
+            border-bottom: 8px solid #FECB00;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.8em;
+            font-weight: 300;
+            letter-spacing: 1.5px;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #E6F0FA;
+            font-weight: 400;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            padding: 0 20px 40px;
+        }
+
+        #map {
+            height: 450px;
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid #DCE6EE;
+            z-index: 1;
+            /* Keeps Leaflet controls from overlapping header if sticky */
+        }
+
+        .day-card {
+            background-color: #FFFFFF;
+            border-radius: 4px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+            margin-bottom: 35px;
+            overflow: hidden;
+            border-left: 6px solid #006AA7;
+        }
+
+        .day-header {
+            background-color: #EBF3F8;
+            padding: 15px 25px;
+            border-bottom: 1px solid #DCE6EE;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-header h2 {
+            margin: 0;
+            color: #006AA7;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .date-badge {
+            background-color: #FECB00;
+            color: #2C3E50;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .time-block {
+            padding: 20px 25px;
+        }
+
+        .time-block:not(:last-child) {
+            border-bottom: 1px solid #F0F4F8;
+        }
+
+        .time-label {
+            font-weight: 700;
+            color: #7F8C8D;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        ul.todo-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        ul.todo-list>li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            color: #34495E;
+        }
+
+        ul.todo-list>li::before {
+            content: "■";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #FECB00;
+            font-size: 1.2em;
+        }
+
+        ul.todo-list ul {
+            list-style-type: none;
+            padding-left: 15px;
+            margin-top: 8px;
+        }
+
+        ul.todo-list ul li {
+            padding-left: 15px;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+            color: #5D6D7E;
+            position: relative;
+        }
+
+        ul.todo-list ul li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #006AA7;
+        }
+
+        .highlight {
+            background-color: #FFF9E6;
+            color: #B8860B;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .badge-conf {
+            background-color: #006AA7;
+            color: white;
+        }
+
+        .badge-travel {
+            background-color: #95A5A6;
+            color: white;
+        }
+
+        .badge-sight {
+            background-color: #27AE60;
+            color: white;
+        }
+
+        .badge-food {
+            background-color: #E67E22;
+            color: white;
+        }
+
+        .info-panel {
+            background-color: #FFF9E6;
+            border-left: 5px solid #FECB00;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .info-panel h3 {
+            margin-top: 0;
+            color: #B8860B;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>ECCV 2026 Itinerary</h1>
+        <div class="subtitle">Malmö, Sweden & Copenhagen, Denmark</div>
+    </header>
+
+    <div class="container">
+
+        <div class="info-panel">
+            <h3>🇸🇪 Välkommen! (Welcome!)</h3>
+            <p>This itinerary is tightly optimized to balance your workshop commitments, your poster presentation, and
+                exploring the best of both Malmö and Copenhagen. Use the interactive map below to orient yourself
+                between the <strong>Malmö Arena</strong> conference site and your sightseeing destinations.</p>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="day-card">
+            <div class="day-header">
+                <h2>Day 1: Arrival & Orientation</h2>
+                <span class="date-badge">Mon, Sept 7</span>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Afternoon</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-travel">Transit</span> <strong>2:00 PM – 4:00 PM:</strong> Arrive at
+                        Copenhagen Airport (CPH).
+                        <ul>
+                            <li>Take the Øresundståg train directly across the famous Øresund bridge to Malmö.</li>
+                        </ul>
+                    </li>
+                    <li><span class="badge badge-travel">Logistics</span> <strong>4:30 PM – 6:30 PM:</strong> Check into
+                        your hotel in Malmö and collect early ECCV registration materials.</li>
+                </ul>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Evening</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-sight">Sightseeing</span> <strong>7:00 PM – 9:00 PM:</strong> Explore
+                        <strong>Lilla torg</strong> (Little Square).
+                        <ul>
+                            <li>Enjoy your first Swedish meal at a terrace restaurant in this historic 16th-century
+                                cobblestone square.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="day-card">
+            <div class="day-header">
+                <h2>Day 2: Workshops & Architecture</h2>
+                <span class="date-badge">Tue, Sept 8</span>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Daytime</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-conf">Conference</span> <strong>8:30 AM – 5:00 PM:</strong> Workshops
+                        at <strong>Malmö Arena</strong> (Hyllie district).</li>
+                </ul>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Evening</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-sight">Sightseeing</span> <strong>5:30 PM – 7:00 PM:</strong> Visit the
+                        <strong>Turning Torso</strong> in Västra Hamnen (Western Harbour).
+                        <ul>
+                            <li>Walk the waterfront promenade and admire Scandinavia's tallest, twisted skyscraper.</li>
+                        </ul>
+                    </li>
+                    <li><span class="badge badge-food">Dining</span> <strong>7:30 PM – 9:00 PM:</strong> Seafood dinner
+                        along the Western Harbour boardwalk watching the sunset over the strait.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="day-card">
+            <div class="day-header">
+                <h2>Day 3: Workshops & History</h2>
+                <span class="date-badge">Wed, Sept 9</span>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Daytime</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-conf">Conference</span> <strong>8:30 AM – 5:00 PM:</strong> Workshops
+                        and Expo at <strong>MalmöMässan</strong>.</li>
+                </ul>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Evening</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-sight">Sightseeing</span> <strong>5:30 PM – 7:30 PM:</strong> Evening
+                        stroll around <strong>Malmö Castle</strong> (Malmöhus).
+                        <ul>
+                            <li>Walk through the peaceful Slottsparken (Castle Park) and along the historic moat.</li>
+                        </ul>
+                    </li>
+                    <li><span class="badge badge-food">Dining</span> <strong>8:00 PM – 9:30 PM:</strong> Dinner in the
+                        Gamla Staden (Old Town) district.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="day-card">
+            <div class="day-header">
+                <h2>Day 4: Main Conference & Swedish Traditions</h2>
+                <span class="date-badge">Thu, Sept 10</span>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Daytime</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-conf">Conference</span> <strong>9:00 AM – 5:00 PM:</strong> ECCV Main
+                        Conference Keynotes and Oral Sessions.</li>
+                </ul>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Evening</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-sight">Experience</span> <strong>6:00 PM – 8:00 PM:</strong>
+                        <strong>Ribersborgs open-air bath</strong> (Ribersborgs Kallbadhus).
+                        <ul>
+                            <li>Recharge before your presentation with a traditional Swedish wood-fired sauna and an
+                                ocean plunge.</li>
+                        </ul>
+                    </li>
+                    <li><span class="badge badge-food">Dining</span> <strong>8:30 PM – 10:00 PM:</strong> Casual dinner
+                        in the Ribersborg neighborhood.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="day-card" style="border-left-color: #FECB00;">
+            <div class="day-header">
+                <h2>Day 5: Poster Presentation Day</h2>
+                <span class="date-badge">Fri, Sept 11</span>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Morning</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-conf">Prep</span> <strong>8:00 AM – 9:00 AM:</strong> Pin up poster at
+                        MalmöMässan and review talking points.</li>
+                    <li><span class="badge badge-conf">Conference</span> <strong>9:00 AM – 12:00 PM:</strong> Morning
+                        conference sessions.</li>
+                </ul>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Afternoon & Evening</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-conf">Presentation</span> <strong>1:00 PM – 4:00 PM:</strong> <span
+                            class="highlight">Poster Presentation Session</span>. Engage with peers and showcase
+                        research.</li>
+                    <li><span class="badge badge-conf">Social</span> <strong>5:00 PM – 7:00 PM:</strong> Official ECCV
+                        2026 Social Event / Gala Dinner.</li>
+                    <li><span class="badge badge-food">Celebrate</span> <strong>7:30 PM onward:</strong>
+                        Post-presentation drinks with lab mates at a local pub in central Malmö.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="day-card">
+            <div class="day-header">
+                <h2>Day 6: Conclusion & Copenhagen</h2>
+                <span class="date-badge">Sat, Sept 12</span>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Morning</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-conf">Conference</span> <strong>9:00 AM – 1:00 PM:</strong> Final ECCV
+                        sessions and closing remarks.</li>
+                    <li><span class="badge badge-travel">Transit</span> <strong>1:30 PM – 2:30 PM:</strong> Grab luggage
+                        and take the train across the bridge to Copenhagen, Denmark.</li>
+                </ul>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Afternoon & Evening</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-sight">Sightseeing</span> <strong>3:30 PM – 5:30 PM:</strong> Explore
+                        <strong>Nyhavn</strong>.
+                        <ul>
+                            <li>Photograph the iconic colorful townhouses and historic ships. Grab a Danish coffee.</li>
+                        </ul>
+                    </li>
+                    <li><span class="badge badge-sight">Sightseeing</span> <strong>5:30 PM – 8:30 PM:</strong> Wander
+                        the Indre By (Inner City) district.</li>
+                    <li><span class="badge badge-food">Dining</span> <strong>8:30 PM:</strong> Celebratory dinner at a
+                        lively restaurant along the Copenhagen canals.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="day-card">
+            <div class="day-header">
+                <h2>Day 7: Departure Day</h2>
+                <span class="date-badge">Sun, Sept 13</span>
+            </div>
+            <div class="time-block">
+                <div class="time-label">Morning</div>
+                <ul class="todo-list">
+                    <li><span class="badge badge-sight">Sightseeing</span> <strong>9:00 AM – 12:00 PM:</strong> Visit
+                        <strong>Tivoli Gardens</strong> (right next to Copenhagen Central Station).
+                        <ul>
+                            <li>Wander through the beautifully landscaped 19th-century amusement park.</li>
+                            <li>Grab a quick Danish pastry before heading to the airport.</li>
+                        </ul>
+                    </li>
+                    <li><span class="badge badge-travel">Transit</span> <strong>Afternoon:</strong> Short train ride
+                        from Copenhagen Central to CPH Airport for departure.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        // Initialize map centered between Malmö and Copenhagen
+        var map = L.map('map').setView([55.60, 12.80], 10);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Define locations to pin
+        var locations = [
+            { name: "🎙️ <strong>Malmö Arena & Mässan</strong><br>Conference Venue", lat: 55.5645, lng: 12.9759 },
+            { name: "🇸🇪 <strong>Lilla torg</strong><br>Historic Market Square", lat: 55.6041, lng: 12.9995 },
+            { name: "🏢 <strong>Turning Torso</strong><br>Västra Hamnen", lat: 55.6133, lng: 12.9763 },
+            { name: "🏰 <strong>Malmö Castle</strong><br>Historic Fortress", lat: 55.6048, lng: 12.9877 },
+            { name: "🌊 <strong>Ribersborgs open-air bath</strong><br>Sauna & Ocean Plunge", lat: 55.6033, lng: 12.9649 },
+            { name: "✈️ <strong>Copenhagen Airport (CPH)</strong>", lat: 55.6279, lng: 12.6515 },
+            { name: "🇩🇰 <strong>Nyhavn</strong><br>Iconic Copenhagen Canal", lat: 55.6800, lng: 12.5910 },
+            { name: "🎢 <strong>Tivoli Gardens</strong><br>Historic Amusement Park", lat: 55.6737, lng: 12.5681 }
+        ];
+
+        // Add markers to the map
+        locations.forEach(function (loc) {
+            L.marker([loc.lat, loc.lng]).addTo(map)
+                .bindPopup(loc.name);
+        });
+    </script>
+</body>
+
+</html>
+
+```
