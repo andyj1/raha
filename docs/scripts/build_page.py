@@ -853,7 +853,7 @@ def motivation_svg() -> str:
     # MERU source block.
     parts.append('<g transform="translate(532,132)">')
     parts.append('<rect x="0" y="0" width="350" height="320" rx="22" fill="#f7f1e8" stroke="#c5d9e8"/>')
-    parts.append('<text x="26" y="44" font-size="32" font-weight="900" fill="#000000">MERU <tspan font-size="16" font-weight="850">(ICML 2024)</tspan></text>')
+    parts.append('<text x="26" y="44" font-size="32" font-weight="900" fill="#000000">MERU <tspan font-size="16" font-weight="850">(ICML 2023)</tspan></text>')
     parts.append('<text x="26" y="76" font-size="16" font-weight="850" fill="#1d76bb">hierarchical image-text geometry</text>')
     parts.append('<g transform="translate(42,94)">')
     parts.append('<path d="M52 12C88 62 100 118 120 178C140 118 152 62 188 12C150 31 90 31 52 12Z" fill="url(#hypGrad)" stroke="#c5d9e8" stroke-width="2.2"/>')
