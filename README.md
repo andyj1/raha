@@ -1,16 +1,18 @@
-# Rank-Aware Hyperbolic Alignment for Vision-Language Dataset Distillation (ECCV 2026)
+Official PyTorch implementation of paper (ECCV 2026):
 
-Official implementation of *Rank-Aware Hyperbolic Alignment for Vision-Language Dataset Distillation* (RAHA), a geometry-aware method for condensing large vision-language datasets into compact synthetic sets while preserving cross-modal retrieval structure.
+> **Rank-Aware Hyperbolic Alignment for Vision-Language Dataset Distillation**  
+> [Jongoh Jeong](https://andyj1.github.io/)<sup>1</sup>, [Sun-Kyung Lee](https://sites.google.com/view/sklee2014)<sup>2</sup>, [Kuk-Jin Yoon](https://sites.google.com/site/kjyoon/)<sup>1</sup>  
+> <sup>1</sup>Korea Advanced Institute of Science and Technology (KAIST), <sup>2</sup>Electronics and Telecommunications Research Institute (ETRI)
 
-[Paper](https://arxiv.org/abs/2606.29464) | [Project Page](https://andyj1.github.io/raha)
+[`arXiv`](https://arxiv.org/abs/2606.29464) | [`Project Page`](https://andyj1.github.io/raha) | [`BibTeX`](#citation)
 
 ## News
 
-- Will be updated soon!
+- Code will be updated soon. Stay tuned! In the meantime, please star this repo!
 
 ## About
 
-RAHA distills compact image-text datasets by combining **rank-aware distribution matching** with **hyperbolic image-text alignment**. It lifts multimodal representations to hyperbolic space, estimates an adaptive rank-k shared semantic range from real batch coupling, matches relevance in that dominant range, and regularizes the residual subspace so weak correlations do not dominate under tight budgets.
+RAHA distills compact image-text datasets by combining rank-aware distribution matching with hyperbolic image-text alignment. It lifts multimodal representations to hyperbolic space, estimates an adaptive rank-k shared semantic range from real batch coupling, matches relevance in that dominant range, and regularizes the residual subspace so weak correlations do not dominate under tight budgets.
 
 The distillation objective is:
 
@@ -34,7 +36,9 @@ data/
 
 Defaults in `distill_raha.py` follow the Karpathy-style retrieval splits used in the paper:
 
-image roots such as `./data/datasets/Flickr30k/` and annotation root `./data/annotations/` when using the `flickr` / `flickr8k` / `coco` options.
+- Image roots such as `./data/datasets/Flickr30k/`
+- Annotation root `./data/annotations/`
+- Dataset options: `flickr`, `flickr8k`, and `coco`
 
 Each distilled query contains one `3×224×224` synthetic image optimized in pixel space and one continuous `768`-dimensional text embedding optimized in embedding space.
 
@@ -99,7 +103,6 @@ CUDA_VISIBLE_DEVICES=0 python eval.py \
     --batch_size_train 64 \
     --batch_size_test 64
 ```
-
 
 ## Citation
 
