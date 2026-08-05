@@ -6,6 +6,8 @@ Official PyTorch implementation of paper (ECCV 2026):
 
 [`arXiv`](https://arxiv.org/abs/2606.29464) | [`Project Page`](https://andyj1.github.io/raha) | [`BibTeX`](#citation)
 
+![Main](https://github.com/andyj1/raha/blob/master/docs/res/main_raha.png)
+
 ## News
 
 - Code will be updated soon. Stay tuned! In the meantime, please star this repo!
