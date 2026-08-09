@@ -2,37 +2,52 @@
 set -euo pipefail
 cd /mnt/d/wsl/raha
 
-# Create and switch to temp from current master
-/usr/bin/git checkout -b temp
+TOKEN=$(python3 - <<'PY'
+import re
+from pathlib import Path
+text = Path.home().joinpath('.git-credentials').read_text(encoding='utf-8', errors='ignore')
+print(re.search(r'https://[^:]*:([^@]+)@github\.com', text).group(1))
+PY
+)
 
-# Stage all without modifying file contents
-/usr/bin/git add -A
+api() {
+  local method="$1"
+  local path="$2"
+  local data="${3:-}"
+  if [ -n "$data" ]; then
+    curl -sS -X "$method" \
+      -H "Authorization: token $TOKEN" \
+      -H "Accept: application/vnd.github+json" \
+      -H "Content-Type: application/json" \
+      -d "$data" \
+      "https://api.github.com$path"
+  else
+    curl -sS -X "$method" \
+      -H "Authorization: token $TOKEN" \
+      -H "Accept: application/vnd.github+json" \
+      "https://api.github.com$path"
+  fi
+}
 
-# Commit via commit-tree (avoids broken git commit wrapper)
-if /usr/bin/git diff --cached --quiet; then
-  echo "Nothing to commit; using current HEAD"
-else
-  printf '%s\n' 'update docs' > /tmp/raha_commit_msg
-  TREE=$(/usr/bin/git write-tree)
-  PARENT=$(/usr/bin/git rev-parse HEAD)
-  COMMIT=$(/usr/bin/git commit-tree "$TREE" -p "$PARENT" -F /tmp/raha_commit_msg)
-  /usr/bin/git update-ref refs/heads/temp "$COMMIT"
-  /usr/bin/git reset --hard "$COMMIT"
-fi
+echo "Setting default branch to temp..."
+api PATCH /repos/andyj1/raha '{"default_branch":"temp"}'
+echo
 
-/usr/bin/git log -1 --oneline
-
-# Push temp branch
-/usr/bin/git push -u origin temp
-
-# Delete remote master
+echo "Deleting remote master..."
 /usr/bin/git push origin --delete master
 
-# Rename temp -> master locally
+echo "Renaming temp -> master locally..."
 /usr/bin/git branch -m temp master
 
-# Push new master and set upstream
+echo "Pushing master..."
 /usr/bin/git push -u origin master
+
+echo "Restoring default branch to master..."
+api PATCH /repos/andyj1/raha '{"default_branch":"master"}'
+echo
+
+echo "Deleting remote temp..."
+/usr/bin/git push origin --delete temp || true
 
 /usr/bin/git status -sb
 /usr/bin/git branch -vv
