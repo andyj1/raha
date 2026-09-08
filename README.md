@@ -1,13 +1,13 @@
 # **Rank-Aware Hyperbolic Alignment for Vision-Language Dataset Distillation (ECCV 2026)**
 
 > [Jongoh Jeong](https://andyj1.github.io/)1, [Sun-Kyung Lee](https://sites.google.com/view/sklee2014)2, [Kuk-Jin Yoon](https://sites.google.com/site/kjyoon/)1  
-> 1Korea Advanced Institute of Science and Technology (KAIST), 2Electronics and Telecommunications Research Institute (ETRI)
+> 1: Korea Advanced Institute of Science and Technology (KAIST), 2: Electronics and Telecommunications Research Institute (ETRI)
 
 ---
 
 Official implementation of Rank-Aware Hyperbolic Alignment for Vision-Language Dataset Distillation, a method for condensing a large vision-language dataset into smaller synthetic sets while preserving its downstream performance.
 
-`[arXiv](https://arxiv.org/abs/2606.29464)` | `[Project Page](https://andyj1.github.io/raha)` | `[BibTeX](#citation)`
+[arXiv](https://arxiv.org/abs/2606.29464) | [Project Page](https://andyj1.github.io/raha) | [BibTeX](#citation)
 
 Main
 
