@@ -1250,6 +1250,17 @@ def main(args):
 	wandb.finish()
 
 
+def str2bool(v):
+	"""argparse helper: `type=bool` treats any non-empty string (including "False") as True."""
+	if isinstance(v, bool):
+		return v
+	if v.lower() in ('yes', 'true', 't', 'y', '1'):
+		return True
+	if v.lower() in ('no', 'false', 'f', 'n', '0'):
+		return False
+	raise argparse.ArgumentTypeError('Boolean value expected, got %r' % v)
+
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Parameter Processing')
 
@@ -1267,11 +1278,11 @@ if __name__ == '__main__':
 	parser.add_argument('--hyperbolic_c', type=float, default=1.0, help='Lorentz curvature')
 	parser.add_argument('--hyp_scale', type=float, default=1.0, help='scale before exp-map (Euclidean -> Lorentz)')
 	parser.add_argument('--hyp_temperature', type=float, default=0.07, help='temperature for hyperbolic InfoNCE')
-	parser.add_argument('--use_wbce', default=False, type=bool, help='use hyperbolic weighted BCE instead of InfoNCE for base hyp term')
+	parser.add_argument('--use_wbce', default=False, type=str2bool, help='use hyperbolic weighted BCE instead of InfoNCE for base hyp term')
 	parser.add_argument('--w_hyp_nce', type=float, default=1.0, help='weight: base hyperbolic bidirectional InfoNCE')
 	parser.add_argument('--w_range_xcov', type=float, default=0.6, help='weight: range subspace real-synthetic matching')
-	parser.add_argument('--w_residual_xcov', dest='w_residual_xcov', type=float, default=0.25, help='weight: residual subspace real-synthetic matching')
-	parser.add_argument('--w_residual_compress', dest='w_residual_compress', type=float, default=0.1, help='weight: residual/range ratio regularization')
+	parser.add_argument('--w_residual_xcov', '--w_null_xcov', dest='w_residual_xcov', type=float, default=0.25, help='weight: residual subspace real-synthetic matching')
+	parser.add_argument('--w_residual_compress', '--w_null_compress', dest='w_residual_compress', type=float, default=0.1, help='weight: residual/range ratio regularization')
 	parser.add_argument('--relevance_temp', type=float, default=0.07, help='temperature for range/residual relevance logits')
 	parser.add_argument('--rn_energy', type=float, default=0.95, help='energy ratio for range rank selection')
 	parser.add_argument('--rn_max_rank', type=int, default=-1, help='max range rank (-1 = no cap)')
@@ -1281,10 +1292,10 @@ if __name__ == '__main__':
 
 	parser.add_argument('--image_encoder', type=str, default='nfnet',  help='image encoder')
 	parser.add_argument('--text_encoder', type=str, default='bert', help='text encoder')
-	parser.add_argument('--image_pretrained', type=bool, default=True, help='image_pretrained')
-	parser.add_argument('--text_pretrained', type=bool, default=True, help='text_pretrained')
-	parser.add_argument('--image_trainable', type=bool, default=True, help='image_trainable')
-	parser.add_argument('--text_trainable', type=bool, default=True, help='text_trainable')
+	parser.add_argument('--image_pretrained', type=str2bool, default=True, help='image_pretrained')
+	parser.add_argument('--text_pretrained', type=str2bool, default=True, help='text_pretrained')
+	parser.add_argument('--image_trainable', type=str2bool, default=True, help='image_trainable')
+	parser.add_argument('--text_trainable', type=str2bool, default=True, help='text_trainable')
 	parser.add_argument('--proj_dim', type=int, default=2304, help='projection dimension')
 
 
